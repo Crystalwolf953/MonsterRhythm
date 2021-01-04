@@ -7,6 +7,7 @@ public class NoteObject : MonoBehaviour
     public bool canBePressed;
     public KeyCode keyToPress;
     public GameObject hitEffect, goodEffect, perfectEffect, missEffect;
+    public float buttonPos;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,13 +22,13 @@ public class NoteObject : MonoBehaviour
             if (canBePressed)
             {
                 double points;
-                if(Mathf.Abs(transform.position.y) > 0.25)
+                if(Mathf.Abs(transform.position.x - buttonPos) > 0.25)
                 {
                     points = GameManager.instance.good;
                     Debug.Log("good");
                     Instantiate(hitEffect, transform.position, hitEffect.transform.rotation);
                 }
-                else if(Mathf.Abs(transform.position.y) > .1)
+                else if(Mathf.Abs(transform.position.x - buttonPos) > .1)
                 {
                     points = GameManager.instance.great;
                     Debug.Log("great");

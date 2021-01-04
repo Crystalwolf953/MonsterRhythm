@@ -29,7 +29,7 @@ public class BeatScroller : MonoBehaviour
         else
         {
             //move the notes down
-            transform.position -= new Vector3(0f, scrollSpeed * bpm * Time.deltaTime, 0f);
+            transform.position -= new Vector3(scrollSpeed * bpm * Time.deltaTime, 0f, 0f);
         }
     }
 }
