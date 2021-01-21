@@ -105,7 +105,7 @@ MonoBehaviour:
     type: 3}
   missEffect: {fileID: 7978215213663102939, guid: 384a891b83c13b4478e958ee2a97e28c,
     type: 3}
-  buttonPos: -8.25
+  buttonPos: -8
 --- !u!58 &5623300287810541664
 CircleCollider2D:
   m_ObjectHideFlags: 0

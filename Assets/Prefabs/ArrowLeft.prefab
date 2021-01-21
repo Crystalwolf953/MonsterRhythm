@@ -36,6 +36,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7978215213663102939, guid: 384a891b83c13b4478e958ee2a97e28c,
         type: 3}
+    - target: {fileID: 3026551820761625277, guid: 3487eebd564f50e449b0079cb4cc02ad,
+        type: 3}
+      propertyPath: buttonPos
+      value: -8
+      objectReference: {fileID: 0}
     - target: {fileID: 7048453269241800355, guid: 3487eebd564f50e449b0079cb4cc02ad,
         type: 3}
       propertyPath: m_Name

@@ -16,33 +16,39 @@ public class GameManager : MonoBehaviour
     //the single isntance of the game manager
     public static GameManager instance;
     //the current score
-    public double score;
+    public float score;
     //the current score multiplier
-    public double multiplier;
+    public float multiplier;
     //the amount of points gained on hitting a note during the attack phase
-    public double scorePerNote;
+    public float scorePerNote;
     //the amount of points lost for missing a note during the defend phase
-    public double scorePerFail;
+    public float scorePerFail;
     //the text label for score
     public Text scoreText;
     //the text label for multiplier
     public Text multiText;
     //the point threshold to win the battle
-    public double pointsToWin;
-    //for the phase integer, 1 is attacking, 2 is defending, 3 is the final leg phase idk what it's called.
+    public float pointsToWin;
+    //boolean for whether you are attacking, defending, or in the transition
+    public bool atkOrDef;
+    //boolean for if you're in a transition
+    public bool transition;
+    //for the phase integer, increases by 1 for every new phase, starts at 1 abd ends at 3;
     public int phase;
     //the length of the attack phase in seconds
-    public double attackTime;
+    public float attackTime;
     //the length of the defend phase in seconds
-    public double defendTime;
+    public float defendTime;
+    //the length of the transition phase in seconds
+    public float transitionTime; 
     //the time at which the previous phase was started.
     public float startTime;
     //the modifier applied to a note score if you get a great hit
-    public double great;
+    public float great;
     //the modifier applied to a note score if you get a good hit
-    public double good;
+    public float good;
     //the modifier applied to a note score if you get a perfect hit
-    public double perfect;
+    public float perfect;
 
     // Start is called before the first frame update
     void Start()
@@ -59,9 +65,10 @@ public class GameManager : MonoBehaviour
         multiText.text = "Multiplier: x" + 1;
         attackTime = 27;
         defendTime = 26;
+        transitionTime = 2;
         perfect = 1;
-        great = .8;
-        good = .5;
+        great = .8f;
+        good = .5f;
     }
 
     // Update is called once per frame
@@ -80,44 +87,41 @@ public class GameManager : MonoBehaviour
                 //winMusic.Play();
                 //winMusic.mute = true;
                 startTime = Time.time;
+                atkOrDef = true;
             }
         }
         else
         {
-            if(phase == 1 && Time.time > (startTime + attackTime))
+            if(atkOrDef && Time.time > (startTime + attackTime))
             {
-                phase = 2;
+                
                 startTime = Time.time;
+                Debug.Log("defend");
+                CheckPhase();
+                atkOrDef = false;
             }
-            if(phase == 2 && Time.time > (startTime + defendTime))
+            if(!atkOrDef && Time.time > (startTime + defendTime))
             {
-                phase = 1;
+                
                 startTime = Time.time;
+                Debug.Log("attack");
+                CheckPhase();
+                atkOrDef = true;
             }
+            
         }
     }
-    public void NoteHit(double hitType)
+    public void NoteHit(float hitType)
     {
         Debug.Log("Hit on time");
         //If it's the player's attack phase
-        if (phase == 1 || phase == 3)
+        if (atkOrDef)
         {
             // "deal damage" by increasing the score
             score += scorePerNote * multiplier * hitType;
         }
-        //If it's the player's defend phase
-        if(phase == 2)
-        {
-            //calculate a portion of damage reduction based on your current multiplier
-            double shield = (multiplier - 1) * scorePerNote;
-            //the the damage reduction is less than the damage taken, reduce your score by the remaining damage
-            if (shield < scorePerFail)
-            {
-                score -= (scorePerFail - shield) * (1 - hitType);
-            }
-        }
         //increment the multiplier and update the text labels
-        multiplier += 0.1;
+        multiplier += 0.1f;
         scoreText.text = "Score: " + score;
         multiText.text = "Multiplier: x" + multiplier;
     }
@@ -125,10 +129,10 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Missed note");
         //if it's the player's defend phase
-        if (phase == 2)
+        if (!atkOrDef)
         {
             //calculate a portion of damage reduction based on your current multiplier
-            double shield = (multiplier - 1) * scorePerNote;
+            float shield = (multiplier - 1) * scorePerNote * 0.5f;
             //the the damage reduction is less than the damage taken, reduce your score by the remaining damage
             if (shield < scorePerFail) {
                 score -= (scorePerFail - shield);
@@ -147,5 +151,50 @@ public class GameManager : MonoBehaviour
     public void Win()
     {
         Debug.Log("You won");
+    }
+    public void CheckPhase()
+    {
+        if(score >= pointsToWin)
+        {
+            if(phase == 1)
+            {
+                music.time = attackTime + defendTime;
+                phase = 2;
+                Debug.Log("transitioning to phase 2");
+                pointsToWin += 2000;
+            }
+            else if(phase == 2)
+            {
+                music.time = (attackTime * 2) + (defendTime * 2) + transitionTime;
+                phase = 3;
+                Debug.Log("transitioning to phase 3");
+                pointsToWin += 2000;
+            }
+            else
+            {
+                Win();
+            }
+        }
+        else
+        {
+            if (!atkOrDef)
+            {
+                if(phase == 1)
+                {
+                    music.time = 0;
+                    Debug.Log("restarting phase 1 music");
+                }
+                else if(phase == 2)
+                {
+                    music.time = attackTime + defendTime + transitionTime;
+                    Debug.Log("restarting phase 2 music");
+                }
+                else
+                {
+                    music.time = (attackTime * 2) + (defendTime * 2) + (transitionTime * 2);
+                    Debug.Log("restarting phase 3 music");
+                }
+            }
+        }
     }
 }

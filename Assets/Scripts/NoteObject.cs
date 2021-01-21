@@ -21,14 +21,14 @@ public class NoteObject : MonoBehaviour
         {
             if (canBePressed)
             {
-                double points;
-                if(Mathf.Abs(transform.position.x - buttonPos) > 0.25)
+                float points;
+                if(Mathf.Abs(transform.position.x - buttonPos) > 0.25f)
                 {
                     points = GameManager.instance.good;
                     Debug.Log("good");
                     Instantiate(hitEffect, transform.position, hitEffect.transform.rotation);
                 }
-                else if(Mathf.Abs(transform.position.x - buttonPos) > .1)
+                else if(Mathf.Abs(transform.position.x - buttonPos) > .1f)
                 {
                     points = GameManager.instance.great;
                     Debug.Log("great");
