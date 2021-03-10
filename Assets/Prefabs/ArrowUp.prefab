@@ -95,7 +95,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d06cf2a98ce8fb4c81794ae49d89597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canBePressed: 0
   keyToPress: 273
   hitEffect: {fileID: 5566517565763978384, guid: 715c1d90afe549b4c866c8e2a8f0740d,
     type: 3}
@@ -106,6 +105,8 @@ MonoBehaviour:
   missEffect: {fileID: 7978215213663102939, guid: 384a891b83c13b4478e958ee2a97e28c,
     type: 3}
   buttonPos: -8
+  perfectOffset: 0.125
+  greatOffset: 0.25
 --- !u!58 &5623300287810541664
 CircleCollider2D:
   m_ObjectHideFlags: 0

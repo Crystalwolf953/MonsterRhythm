@@ -5,56 +5,56 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    //the music to be played
+    [Tooltip("the music to be played")]
     public AudioSource music;
     //the music to be played when you are close to winning
     //public AudioSource winMusic;
     //whether or not the music has begun
-    public bool startPlaying;
-    //the beatscroller which controlls all of the notes
+    private bool startPlaying;
+    [Tooltip("the beatscroller which contains all of the notes")]
     public BeatScroller theBS;
-    //the single isntance of the game manager
+    [Tooltip("the single isntance of the game manager")]
     public static GameManager instance;
     //the current score
-    public float score;
+    private float score;
     //the current score multiplier
-    public float multiplier;
-    //the amount of points gained on hitting a note during the attack phase
+    private float multiplier;
+    [Tooltip("the amount of points gained on hitting a note during the attack phase")]
     public float scorePerNote;
-    //the amount of points lost for missing a note during the defend phase
+    [Tooltip("the amount of points lost for missing a note during the defend phase")]
     public float scorePerFail;
-    //the text label for score
+    [Tooltip("the text label for score")]
     public Text scoreText;
-    //the text label for multiplier
+    [Tooltip("the text label for multiplier")]
     public Text multiText;
-    //the point threshold to win the battle
+    [Tooltip("the point threshold to win the battle")]
     public float pointsToWin;
     //boolean for whether you are attacking, defending, or in the transition
-    public bool atkOrDef;
+    private bool atkOrDef;
     //boolean for if you're in a transition
-    public bool transition;
-    //for the phase integer, increases by 1 for every new phase, starts at 1 abd ends at 3;
-    public int phase;
-    //the length of the attack phase in seconds
+    private bool transition;
+    //for the phase integer, increases by 1 for every new phase, starts at 1 and ends at 3;
+    private int phase;
+    [Tooltip("the length of the attack phase in seconds")]
     public float attackTime;
-    //the length of the defend phase in seconds
+    [Tooltip("the length of the defend phase in seconds")]
     public float defendTime;
-    //the length of the transition phase in seconds
+    [Tooltip("the length of the transition phase in seconds")]
     public float transitionTime; 
     //the time at which the previous phase was started.
-    public float startTime;
-    //the modifier applied to a note score if you get a great hit
+    private float startTime;
+    [Tooltip("the modifier applied to a note score if you get a great hit")]
     public float great;
-    //the modifier applied to a note score if you get a good hit
+    [Tooltip("the modifier applied to a note score if you get a good hit")]
     public float good;
-    //the modifier applied to a note score if you get a perfect hit
+    [Tooltip("the modifier applied to a note score if you get a perfect hit")]
     public float perfect;
 
     // Start is called before the first frame update
     void Start()
     {
         //initializing all of the values;
-        pointsToWin = 2000;
+        //pointsToWin = 2000;
         instance = this;
         score = 1000;
         phase = 1;
@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
             {
                 //the game starts and the music begins to play
                 startPlaying = true;
-                theBS.hasStarted = true;
+                theBS.Play();
                 music.Play();
                 //winMusic.Play();
                 //winMusic.mute = true;
@@ -92,6 +92,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            //If you're in the attacking phase and the time for the attack phase has passed, switch to defend and check if you've passed the point barrier to enter the next phase
             if(atkOrDef && Time.time > (startTime + attackTime))
             {
                 
@@ -100,7 +101,8 @@ public class GameManager : MonoBehaviour
                 CheckPhase();
                 atkOrDef = false;
             }
-            if(!atkOrDef && Time.time > (startTime + defendTime))
+            //If you're in the defending phase and the time for the defend phase has passed, switch to attack and check if you've passed the point barrier to enter the next phase
+            if (!atkOrDef && Time.time > (startTime + defendTime))
             {
                 
                 startTime = Time.time;
@@ -150,12 +152,15 @@ public class GameManager : MonoBehaviour
     }
     public void Win()
     {
+        music.Stop();
         Debug.Log("You won");
     }
     public void CheckPhase()
     {
+        //if you've passed the required amount of points to move on to the next phase, then shift forward a phase
         if(score >= pointsToWin)
         {
+            //if you're in phase 1, enter phase 2 and shift to the correct spot in the music
             if(phase == 1)
             {
                 music.time = attackTime + defendTime;
@@ -163,6 +168,7 @@ public class GameManager : MonoBehaviour
                 Debug.Log("transitioning to phase 2");
                 pointsToWin += 2000;
             }
+            //if you're in phase 2, enter phase 3 and shift to the corret spot in the music
             else if(phase == 2)
             {
                 music.time = (attackTime * 2) + (defendTime * 2) + transitionTime;
@@ -170,13 +176,16 @@ public class GameManager : MonoBehaviour
                 Debug.Log("transitioning to phase 3");
                 pointsToWin += 2000;
             }
+            //if you're in phase 2, signal a win
             else
             {
                 Win();
             }
         }
+        //if you didn't move on to the next phase, check if you're attacking or defending
         else
         {
+            //if you're defending, then shift the music to the necessary spot
             if (!atkOrDef)
             {
                 if(phase == 1)

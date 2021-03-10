@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class ButtonController : MonoBehaviour
 {
+    //the sprite rendered
     private SpriteRenderer theSR;
+    [Tooltip("the image to display when the button isn't pressed")]
     public Sprite defaultImage;
+    [Tooltip("the image to display when the button is pressed")]
     public Sprite pressedImage;
 
     public KeyCode keyToPress;
@@ -18,10 +21,12 @@ public class ButtonController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //update if the button is pressed
         if (Input.GetKeyDown(keyToPress))
         {
             theSR.sprite = pressedImage;
         }
+        //update if the button is released
         if (Input.GetKeyUp(keyToPress))
         {
             theSR.sprite = defaultImage;

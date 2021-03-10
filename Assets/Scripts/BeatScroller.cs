@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class BeatScroller : MonoBehaviour
 {
-
+    [Tooltip("the beats per minute of the current audio")]
     public float bpm;
-    public bool hasStarted;
+    //whether or not the music has started
+    private bool hasStarted;
+    [Tooltip("the speed at which the beatscroller will move")]
     public float scrollSpeed;
 
     // Start is called before the first frame update
@@ -31,5 +33,21 @@ public class BeatScroller : MonoBehaviour
             //move the notes down
             transform.position -= new Vector3(scrollSpeed * bpm * Time.deltaTime, 0f, 0f);
         }
+    }
+    //returns hasStarted
+    public bool HasStarted()
+    {
+        return hasStarted;
+    }
+
+    //sets hasStarted to true
+    public void Play()
+    {
+        hasStarted = true;
+    }
+    //sets hasStarted to false
+    public void Stop()
+    {
+        hasStarted = false;
     }
 }
